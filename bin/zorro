@@ -1,0 +1,72 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'commander/import'
+require 'yaml'
+
+# Without .zorro.yml
+#
+# zorro bitbucket --account zigotto --repo zorro
+# zorro bitbucket --account zigotto --repo zorro --open branches
+# zorro bitbucket --account zigotto --repo zorro --open pulls
+# zorro bitbucket --account zigotto --repo zorro --open source
+#
+# With .zorro.yml
+#
+# bitbucket:
+#   :account: zigotto
+#   :repo: zorro
+#   :open: root
+#
+# zorro
+# zorro --open branches
+# zorro --open pulls
+# zorro --open source
+
+program :version, '0.0.1'
+program :description, 'Zorro FTW!'
+
+command :bitbucket do |c|
+  c.syntax      = 'zorro bitbucket [options]'
+  c.description = 'Helps you interact with Bitbucket'
+  c.example 'Opens the repository branches', 'zorro --account bitbucket_username --repo my_repo --open branches'
+
+  c.option '--account STRING',  String, 'You bitbucket account name'
+  c.option '--repo STRING',     String, 'Repository name'
+  c.option '--open STRING',     String, 'You can use (branches, pulls or source)'
+
+  c.action do |args, options|
+
+    config_file = File.join(File.expand_path('.'), '.zorro.yml')
+    options.default YAML.load_file(config_file)['bitbucket'] if File.exists?(config_file)
+
+    case options.open
+    when 'branches'
+      `open https://bitbucket.org/#{options.account}/#{options.repo}/branches`
+    when 'pulls'
+      `open https://bitbucket.org/#{options.account}/#{options.repo}/pull-requests`
+    when 'source'
+      `open https://bitbucket.org/#{options.account}/#{options.repo}/src`
+    when 'root'
+      `open https://bitbucket.org/#{options.account}/#{options.repo}`
+    end
+  end
+end
+
+default_command :bitbucket
+
+command :trello do |c|
+  c.syntax      = 'zorro trello [options]'
+  c.description = 'Helps you interact with Trello'
+  c.example 'Opens the project page', 'zorro trello --url https://trello.com/b/zxPDMIWO/intelrisk-x-zigotto'
+
+  c.option '--id STRING',  String, 'You board ID'
+
+  c.action do |args, options|
+
+    config_file = File.join(File.expand_path('.'), '.zorro.yml')
+    options.default YAML.load_file(config_file)['trello'] if File.exists?(config_file)
+
+    `open https://trello.com/b/#{options.id}`
+  end
+end
