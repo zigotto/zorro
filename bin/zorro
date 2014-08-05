@@ -73,10 +73,24 @@ command :gem do |c|
   c.syntax = 'zorro gem <name>'
   c.description = 'Show info about gem'
 
+  c.option '--save'
+  c.option '--file STRING', String, 'Gemfile file'
+
   c.action do |args, options|
     puts "Searching info for #{args.first}..."
-
     info = Zorro::Gem.info(args.first)
-    puts info.to_gemfile
+
+    options.default :file => './Gemfile'
+
+    if options.save
+      puts 'Saving...'
+
+      open(options.file, 'a') do |file|
+        file << info.to_gemfile
+      end
+
+      puts 'Done!'
+    end
+
   end
 end
