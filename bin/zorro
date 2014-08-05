@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'rubygems'
-require 'commander/import'
-require 'yaml'
+require File.expand_path('../../lib/zorro', __FILE__)
 
 # Without .zorro.yml
 #
@@ -68,5 +66,17 @@ command :trello do |c|
     options.default YAML.load_file(config_file)['trello'] if File.exists?(config_file)
 
     `open https://trello.com/b/#{options.id}`
+  end
+end
+
+command :gem do |c|
+  c.syntax = 'zorro gem <name>'
+  c.description = 'Show info about gem'
+
+  c.action do |args, options|
+    puts "Searching info for #{args.first}..."
+
+    info = Zorro::Gem.info(args.first)
+    puts info.to_gemfile
   end
 end
