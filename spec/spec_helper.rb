@@ -2,6 +2,8 @@ $:.unshift File.dirname(__FILE__) + '/../lib'
 
 require 'zorro'
 
+Dir["./spec/support/**/*.rb"].each { |f| require f }
+
 RSpec.configure do |config|
   Kernel.srand config.seed
 

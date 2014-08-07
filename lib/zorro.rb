@@ -29,7 +29,7 @@ module Zorro
       case response.code
       when 200
         Gem.new(response)
-      else
+      when 404
         raise Gem::NotFound
       end
 
