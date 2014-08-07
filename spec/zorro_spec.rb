@@ -1,14 +1,18 @@
 describe Zorro::Gem do
-  describe '::info' do
-    context "when gem is found", vcr: { cassette_name: 'when_gem_is_found' } do
-      let(:gem) { Zorro::Gem.info('googl') }
+  context "when gem is found", vcr: { cassette_name: 'when_gem_is_found' } do
+    let(:search) { Zorro::Gem.info('googl') }
 
-      it { expect(gem.name).to eq('googl') }
-      it { expect(gem.version).to eq('0.6.3') }
-    end
+    it { expect(search.name).to eq('googl') }
+    it { expect(search.version).to eq('0.6.3') }
 
-    context "when gem is not found", vcr: { cassette_name: 'when_gem_is_not_found' } do
-      it { expect(Zorro::Gem.info('gem_xpto_invalid')).to eql(Zorro::Messages::GEM_NOT_FOUND) }
+    describe '#to_gemfile' do
+      it { expect(search.to_gemfile).to eql("gem 'googl', '~> 0.6.3'") }
     end
+  end
+
+  context "when gem is not found", vcr: { cassette_name: 'when_gem_is_not_found' } do
+    let(:search) { Zorro::Gem.info('gem_xpto_invalid') }
+
+    it { expect(search).to eql(Zorro::Messages::GEM_NOT_FOUND) }
   end
 end

@@ -1,4 +1,4 @@
-require 'yaml'
+require 'bundler/setup'
 require 'httparty'
 
 require_relative "zorro/version"
@@ -10,6 +10,8 @@ module Zorro
 
   module Request
     include HTTParty
+
+    base_uri 'https://rubygems.org/api/v1'
   end
 
   class Gem
@@ -23,17 +25,14 @@ module Zorro
     end
 
     def self.info(gem_name)
-      api_url = "https://rubygems.org/api/v1/gems/%s.json" % CGI.escape(gem_name)
-      response = Request.get(api_url)
+      url = "/gems/%s.json" % CGI.escape(gem_name)
+      response = Request.get(url)
 
       case response.code
-      when 200
-        Gem.new(response)
-      when 404
-        raise Gem::NotFound
+      when 200 then Gem.new(response)
+      when 404 then raise NotFound
       end
-
-    rescue Gem::NotFound
+    rescue NotFound
       Messages::GEM_NOT_FOUND
     end
 
