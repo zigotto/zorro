@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'commander/import'
 require File.expand_path('../../lib/zorro', __FILE__)
 
 # Without .zorro.yml

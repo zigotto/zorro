@@ -1,15 +1,20 @@
-require 'commander/import'
 require 'yaml'
 require 'httparty'
 
 require_relative "zorro/version"
 
 module Zorro
+  module Messages
+    GEM_NOT_FOUND = 'Gem not found'
+  end
+
   module Request
     include HTTParty
   end
 
   class Gem
+    class NotFound < StandardError; end
+
     attr_accessor :name, :version
 
     def initialize(response)
@@ -25,8 +30,11 @@ module Zorro
       when 200
         Gem.new(response)
       else
-        puts "Ops! #{response.code} #{response.message}"
+        raise Gem::NotFound
       end
+
+    rescue Gem::NotFound
+      Messages::GEM_NOT_FOUND
     end
 
     def to_gemfile

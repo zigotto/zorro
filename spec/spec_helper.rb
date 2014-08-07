@@ -1,3 +1,7 @@
+$:.unshift File.dirname(__FILE__) + '/../lib'
+
+require 'zorro'
+
 RSpec.configure do |config|
   Kernel.srand config.seed
 
