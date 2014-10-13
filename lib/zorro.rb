@@ -36,6 +36,13 @@ module Zorro
       Messages::GEM_NOT_FOUND
     end
 
+    def self.run(gem_name, *args)
+      info = Gem.info(gem_name)
+
+      puts 'Searching info for %s...' % info.name
+      puts info.to_gemfile
+    end
+
     def to_gemfile
       "gem \'#{name}\', \'~> #{version}\'"
     end
