@@ -13,7 +13,8 @@ describe Zorro::Gem do
   context "when gem is not found", vcr: { cassette_name: 'when_gem_is_not_found' } do
     let(:search) { Zorro::Gem.info('gem_xpto_invalid') }
 
-    it { expect(search).to eql(Zorro::Messages::GEM_NOT_FOUND) }
+    it { expect(search.valid?).to be false }
+    it { expect(search.to_gemfile).to be_nil }
   end
 
   context "command line" do
@@ -28,6 +29,12 @@ describe Zorro::Gem do
       context "and the --save flag is given" do
         pending
       end
+    end
+
+    context "when gem is not found", vcr: { cassette_name: 'when_gem_is_not_found' } do
+      let(:output) { capture_stdout { Zorro::Gem.run('gem_xpto_invalid') } }
+
+      it { expect(output).to include(Zorro::Messages::GEM_NOT_FOUND) }
     end
   end
 end

@@ -14,14 +14,22 @@ module Zorro
     base_uri 'https://rubygems.org/api/v1'
   end
 
-  class Gem
+  class Base
+    def self.say(message)
+      puts message
+    end
+  end
+
+  class Gem < Base
     class NotFound < StandardError; end
 
-    attr_accessor :name, :version
+    attr_accessor :name, :version, :valid
+    alias_method :valid?, :valid
 
     def initialize(response)
-      @name = response['name']
-      @version = response['version']
+      @name     = response['name']
+      @version  = response['version']
+      @valid    = response[:valid]
     end
 
     def self.info(gem_name)
@@ -29,22 +37,26 @@ module Zorro
       response = Request.get(url)
 
       case response.code
-      when 200 then Gem.new(response)
+      when 200 then Gem.new(response.merge!(valid: true))
       when 404 then raise NotFound
       end
     rescue NotFound
-      Messages::GEM_NOT_FOUND
+      Gem.new(valid: false)
     end
 
     def self.run(gem_name, *args)
       info = Gem.info(gem_name)
 
-      puts 'Searching info for %s...' % info.name
-      puts info.to_gemfile
+      if info.valid?
+        say 'Searching info for %s...' % info.name
+        say info.to_gemfile
+      else
+        say Messages::GEM_NOT_FOUND
+      end
     end
 
     def to_gemfile
-      "gem \'#{name}\', \'~> #{version}\'"
+      "gem \'#{name}\', \'~> #{version}\'" if valid?
     end
   end
 end

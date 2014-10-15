@@ -1,6 +1,7 @@
 $:.unshift File.dirname(__FILE__) + '/../lib'
 
 require 'zorro'
+require 'pry'
 
 Dir["./spec/support/**/*.rb"].each { |f| require f }
 
