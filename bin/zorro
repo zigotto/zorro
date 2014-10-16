@@ -78,8 +78,8 @@ command :gem do |c|
   c.option '--file STRING', String, 'Gemfile file'
 
   c.action do |args, options|
-    puts "Searching info for #{args.first}..."
     info = Zorro::Gem.info(args.first)
+    info.to_output
 
     options.default :file => './Gemfile'
 

@@ -1,6 +1,6 @@
 module Zorro
   class Base
-    def self.say(message)
+    def say(message)
       puts message
     end
   end

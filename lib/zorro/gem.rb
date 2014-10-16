@@ -23,15 +23,11 @@ module Zorro
       Gem.new('valid' => false)
     end
 
-    def self.run(gem_name, *args)
-      info = Gem.info(gem_name)
+    def to_stdout
+      return say Messages::GEM_NOT_FOUND if !valid?
 
-      if info.valid?
-        say Messages::SEARCHING_GEM % info.name
-        say info.to_gemfile
-      else
-        say Messages::GEM_NOT_FOUND
-      end
+      say Messages::SEARCHING_GEM % name
+      say to_gemfile
     end
 
     def to_gemfile
