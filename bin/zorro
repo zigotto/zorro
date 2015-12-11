@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'commander/import'
 require 'yaml'
+require 'launchy'
 
 # Without .zorro.yml
 #
@@ -42,13 +43,13 @@ command :bitbucket do |c|
 
     case options.open
     when 'branches'
-      `open https://bitbucket.org/#{options.account}/#{options.repo}/branches`
+      Launchy.open "https://bitbucket.org/#{options.account}/#{options.repo}/branches"
     when 'pulls'
-      `open https://bitbucket.org/#{options.account}/#{options.repo}/pull-requests`
+      Launchy.open "https://bitbucket.org/#{options.account}/#{options.repo}/pull-requests"
     when 'source'
-      `open https://bitbucket.org/#{options.account}/#{options.repo}/src`
+      Launchy.open "https://bitbucket.org/#{options.account}/#{options.repo}/src`"
     when 'root'
-      `open https://bitbucket.org/#{options.account}/#{options.repo}`
+      Launchy.open "https://bitbucket.org/#{options.account}/#{options.repo}"
     end
   end
 end
@@ -67,6 +68,6 @@ command :trello do |c|
     config_file = File.join(File.expand_path('.'), '.zorro.yml')
     options.default YAML.load_file(config_file)['trello'] if File.exists?(config_file)
 
-    `open https://trello.com/b/#{options.id}`
+    Launchy.open "https://trello.com/b/#{options.id}"
   end
 end
