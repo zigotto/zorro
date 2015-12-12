@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'commander/import'
 require 'yaml'
+require 'launchy'
 
 # Without .zorro.yml
 #
@@ -31,7 +32,7 @@ command :bitbucket do |c|
   c.description = 'Helps you interact with Bitbucket'
   c.example 'Opens the repository branches', 'zorro --account bitbucket_username --repo my_repo --open branches'
 
-  c.option '--account STRING',  String, 'You bitbucket account name'
+  c.option '--account STRING',  String, 'Your bitbucket account name'
   c.option '--repo STRING',     String, 'Repository name'
   c.option '--open STRING',     String, 'You can use (branches, pulls or source)'
 
@@ -42,13 +43,42 @@ command :bitbucket do |c|
 
     case options.open
     when 'branches'
-      `open https://bitbucket.org/#{options.account}/#{options.repo}/branches`
+      Launchy.open "https://bitbucket.org/#{options.account}/#{options.repo}/branches"
     when 'pulls'
-      `open https://bitbucket.org/#{options.account}/#{options.repo}/pull-requests`
+      Launchy.open "https://bitbucket.org/#{options.account}/#{options.repo}/pull-requests"
     when 'source'
-      `open https://bitbucket.org/#{options.account}/#{options.repo}/src`
+      Launchy.open "https://bitbucket.org/#{options.account}/#{options.repo}/src`"
     when 'root'
-      `open https://bitbucket.org/#{options.account}/#{options.repo}`
+      Launchy.open "https://bitbucket.org/#{options.account}/#{options.repo}"
+    end
+  end
+end
+
+command :github do |c|
+  c.syntax      = 'zorro github [options]'
+  c.description = 'Helps you interact with Github'
+  c.example 'Opens up repository issues', 'zorro github --account github_username --repo github_repo --open issues'
+
+  c.option '--account STRING', String, 'Your Github Username'
+  c.option '--repo STRING', String, 'Repository name'
+  c.option '--open STRING', String, ' You can use (pulls, issues,settings,graphs,pulse,wiki)'
+  c.action do |args, options|
+    config_file = File.join(File.expand_path('.'),'.zorro.yml')
+    options.default YAML.load_file(config_file)['github'] if File.exists?(config_file)
+
+    case options.open
+    when 'pulls'
+      Launchy.open "https://github.com/#{options.account}/#{options.repo}/pulls"
+    when 'issues'
+      Launchy.open "https://github.com/#{options.account}/#{options.repo}/issues"
+    when 'wiki'
+      Launchy.open "https://github.com/#{options.account}/#{options.repo}/wiki"
+    when 'graphs'
+      Launchy.open "https://github.com/#{options.account}/#{options.repo}/graphs"
+    when 'pulse'
+      Launchy.open "https://github.com/#{options.account}/#{options.repo}/pulse"
+    when 'settings'
+      Launchy.open "https://github.com/#{options.account}/#{options.repo}/settings"
     end
   end
 end
@@ -67,6 +97,6 @@ command :trello do |c|
     config_file = File.join(File.expand_path('.'), '.zorro.yml')
     options.default YAML.load_file(config_file)['trello'] if File.exists?(config_file)
 
-    `open https://trello.com/b/#{options.id}`
+    Launchy.open "https://trello.com/b/#{options.id}"
   end
 end
